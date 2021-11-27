@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDTO } from './dto/create-customer.dto';
+import { ValidateIdPipe } from './validations/validateId.pipe';
 
 @Controller('customer')
 export class CustomerController {
@@ -36,7 +37,7 @@ export class CustomerController {
   }
 
   @Get(':id')
-  async getCustomerById(@Res() res, @Param('id') id) {
+  async getCustomerById(@Res() res, @Param('id', ValidateIdPipe) id) {
     const customer = await this.customerService.getCustomerById(id);
 
     if (!customer) throw new NotFoundException('Customer does not exist!');
@@ -46,7 +47,7 @@ export class CustomerController {
   @Put(':id')
   async updateCustomer(
     @Res() res,
-    @Param('id') id,
+    @Param('id', ValidateIdPipe) id,
     @Body() createCustomerDTO: CreateCustomerDTO,
   ) {
     const updatedCustomer = await this.customerService.updateCustomer(
@@ -62,7 +63,7 @@ export class CustomerController {
   }
 
   @Delete(':id')
-  async deleteCustomer(@Res() res, @Param('id') id) {
+  async deleteCustomer(@Res() res, @Param('id', ValidateIdPipe) id) {
     const deletedCustomer = await this.customerService.deleteCustomer(id);
     if (!deletedCustomer)
       throw new NotFoundException('Customer does not exist!');
